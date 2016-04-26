@@ -41,7 +41,7 @@ public class Demo {
             IPHost host1= NetworkBuilder.createHost(network, "H1", IP_ADDR1, MAC_ADDR1);
             host1.getIPLayer().addRoute(IP_ADDR3, "eth0");
             host1.getIPLayer().addRoute(IP_ADDR2, "eth0");
-            //host1.addApplication(new AppSender(host1, IP_ADDR2, 5));
+            host1.addApplication(new AppSender(host1, IP_ADDR2));
 
             IPRouter router1 = NetworkBuilder.createRouter(network,"R1",ROUTER_IP_ADDR,ROUTER_MAC_ADDR);
             router1.getIPLayer().addRoute(IP_ADDR1, "eth0");
@@ -50,20 +50,25 @@ public class Demo {
             IPHost host2= NetworkBuilder.createHost(network,"H2", IP_ADDR2, MAC_ADDR2);
             host2.getIPLayer().addRoute(IP_ADDR4, "eth0");
             host2.getIPLayer().addRoute(IP_ADDR1, "eth0");
-            //host2.addApplication(new AppReceiver(host2));
+            host2.addApplication(new AppReceiver(host2));
 
             EthernetInterface h1_eth0= (EthernetInterface) host1.getInterfaceByName("eth0");
             EthernetInterface h2_eth0= (EthernetInterface) host2.getInterfaceByName("eth0");
             EthernetInterface r1_eth0= (EthernetInterface) router1.getInterfaceByName("eth0");
             EthernetInterface r1_eth1= (EthernetInterface) router1.getInterfaceByName("eth1");
 
-            new Link<EthernetFrame>(h1_eth0, r1_eth0, 5000000, 100000);
-            new Link<EthernetFrame>(r1_eth1, h2_eth0, 2000000, 50000);
+            new Link<EthernetFrame>(h1_eth0, h2_eth0, 5000000, 100000);
+            //new Link<EthernetFrame>(r1_eth1, h2_eth0, 2000000, 50000);
 
-            File f= new File("/tmp/network.graphviz");
-            Writer w= new BufferedWriter(new FileWriter(f));
-            NetworkGrapher.toGraphviz(network ,new PrintWriter(w));
-            w.close();
+            //File f= new File("/tmp/network.graphviz");
+            //Writer w= new BufferedWriter(new FileWriter(f));
+            //NetworkGrapher.toGraphviz(network ,new PrintWriter(w));
+            //w.close();
+
+            host1.start();
+            host2.start();
+
+            scheduler.run();
 
         }
         catch (Exception e){
