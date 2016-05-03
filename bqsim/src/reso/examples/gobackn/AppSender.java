@@ -22,8 +22,8 @@ public class AppSender
 
     public void start()
         throws Exception{
-        ip.addListener(GoBackNProtocol.IP_PROTO_GOBACKN, new GoBackNProtocol((IPHost) host));
-        ip.send(IPAddress.ANY, dst, GoBackNProtocol.IP_PROTO_GOBACKN, new GoBackNMessage(false,0));
+        ip.addListener(GoBackNProtocolSender.IP_PROTO_GOBACKN_SENDER, new GoBackNProtocolSender((IPHost) host));
+        ip.send(IPAddress.ANY, dst, GoBackNProtocolReceiver.IP_PROTO_GOBACKN_RECEIVER, new GoBackNMessage(5));
     }
 
     public void stop(){}

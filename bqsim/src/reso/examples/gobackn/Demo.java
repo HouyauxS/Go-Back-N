@@ -43,7 +43,7 @@ public class Demo {
             EthernetInterface h1_eth0= (EthernetInterface) host1.getInterfaceByName("eth0");
             EthernetInterface h2_eth0= (EthernetInterface) host2.getInterfaceByName("eth0");
 
-            new UnreliableLink<EthernetFrame>(h1_eth0, h2_eth0, 5000000, 100000);
+            new Link<EthernetFrame>(h1_eth0, h2_eth0, 5000000, 100000);
 
             File f= new File("/tmp/network.graphviz");
             Writer w= new BufferedWriter(new FileWriter(f));

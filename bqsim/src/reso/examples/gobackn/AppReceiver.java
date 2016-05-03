@@ -18,7 +18,8 @@ public class AppReceiver
     }
 
     public void start(){
-        ip.addListener(GoBackNProtocol.IP_PROTO_GOBACKN, new GoBackNProtocol((IPHost) host));
+
+        ip.addListener(GoBackNProtocolReceiver.IP_PROTO_GOBACKN_RECEIVER, new GoBackNProtocolReceiver((IPHost) host));
     }
 
     public void stop(){}

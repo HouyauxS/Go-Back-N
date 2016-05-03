@@ -8,23 +8,20 @@ import reso.common.Message;
 public class GoBackNMessage implements Message{
 
     public final int num;
-    private boolean corrupted;
+    public final String payload;
 
-    public GoBackNMessage(boolean corrupted,int num){
+    public GoBackNMessage(int num, String payload){
         this.num = num;
-        this.corrupted = corrupted;
+        this.payload = payload;
     }
 
-    public boolean isCorrupted() {
-        return corrupted;
-    }
-
-    public void setCorrupted(boolean corrupted) {
-        this.corrupted = corrupted;
+    public GoBackNMessage(int num){
+        this.num = num;
+        payload= "";
     }
 
     public String toString() {
-        return "Segment number : " + num + " and corrupted : " + corrupted;
+        return "Message number : " + num + " " + payload;
     }
 
     @Override
