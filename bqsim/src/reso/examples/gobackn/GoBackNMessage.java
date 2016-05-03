@@ -8,10 +8,18 @@ import reso.common.Message;
 public class GoBackNMessage implements Message{
 
     public final int num;
-    public final boolean corrupted;
+    private boolean corrupted;
 
     public GoBackNMessage(boolean corrupted,int num){
         this.num = num;
+        this.corrupted = corrupted;
+    }
+
+    public boolean isCorrupted() {
+        return corrupted;
+    }
+
+    public void setCorrupted(boolean corrupted) {
         this.corrupted = corrupted;
     }
 

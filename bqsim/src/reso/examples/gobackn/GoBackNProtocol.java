@@ -14,7 +14,6 @@ public class GoBackNProtocol implements IPInterfaceListener{
     public static final int IP_PROTO_GOBACKN = Datagram.allocateProtocolNumber("Go-Back-N");
 
     private final IPHost host;
-
     public GoBackNProtocol(IPHost host){this.host= host;}
 
     @Override
