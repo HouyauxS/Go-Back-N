@@ -1,5 +1,6 @@
 package reso.examples.gobackn;
 
+import reso.common.AbstractTimer;
 import reso.common.Link;
 import reso.common.Network;
 import reso.common.Node;
@@ -31,9 +32,10 @@ public class Demo {
             final IPAddress IP_ADDR1= IPAddress.getByAddress(192, 168, 0, 1);
             final IPAddress IP_ADDR2= IPAddress.getByAddress(192, 168, 0, 2);
 
+            Scenario scenar = new Scenario(100, 1);
             IPHost host1= NetworkBuilder.createHost(network, "H1", IP_ADDR1, MAC_ADDR1);
             host1.getIPLayer().addRoute(IP_ADDR2, "eth0");
-            host1.addApplication(new AppSender(host1, IP_ADDR2));
+            host1.addApplication(new AppSender(host1, IP_ADDR2, scenar.messages));
 
 
             IPHost host2= NetworkBuilder.createHost(network,"H2", IP_ADDR2, MAC_ADDR2);
@@ -45,12 +47,19 @@ public class Demo {
 
             new Link<EthernetFrame>(h1_eth0, h2_eth0, 5000000, 100000);
 
+            AbstractTimer at = new AbstractTimer(scheduler, scenar.interval, true) {
+                @Override
+                protected void run() throws Exception {
+                    host1.start();
+                }
+            };
+
             File f= new File("/tmp/network.graphviz");
             Writer w= new BufferedWriter(new FileWriter(f));
             NetworkGrapher.toGraphviz(network ,new PrintWriter(w));
             w.close();
 
-            host1.start();
+            at.start();
             host2.start();
 
             scheduler.run();
