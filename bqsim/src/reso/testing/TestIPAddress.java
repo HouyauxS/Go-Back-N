@@ -1,9 +1,8 @@
 package reso.testing;
 
-import org.junit.Test;
-
-import reso.ip.IPAddress;
 import junit.framework.TestCase;
+import org.junit.Test;
+import reso.ip.IPAddress;
 
 public class TestIPAddress extends TestCase {
 	
@@ -40,7 +39,9 @@ public class TestIPAddress extends TestCase {
 		assertTrue(a1.compareTo(a5) < 0);
 		assertTrue(a5.compareTo(a6) < 0);
 	}
-	
+
+
+
 	@Test
 	public void testBroadcast() throws Exception {
 		IPAddress a1= IPAddress.BROADCAST;
