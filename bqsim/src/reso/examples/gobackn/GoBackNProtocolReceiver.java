@@ -8,7 +8,7 @@ import reso.ip.*;
 public class GoBackNProtocolReceiver implements IPInterfaceListener{
 
     public static final int IP_PROTO_GOBACKN_RECEIVER = Datagram.allocateProtocolNumber("Go-Back-N-S");
-    int seq = 0; // the expected sequence number
+    int seq = 0; // the expected sequence number (at the beginning it's 0 )
 
     private final IPHost host;
     public GoBackNProtocolReceiver(IPHost host){this.host= host;}
@@ -23,11 +23,8 @@ public class GoBackNProtocolReceiver implements IPInterfaceListener{
         System.out.println("Receiver : Go-Back-N message from " + datagram.src + " to "
                 + datagram.dst + " : " + msg);
         if (msg.num == seq) { // message received in order
-            /*gérerl'application
-            *
-            * String data = msg.payload;
-            * envoie de data à couche application
-            * */
+            String data = msg.payload; //we can use the data for a random application
+            System.out.println(data); // here , we just print it because the data is not useful
             seq++;
             host.getIPLayer().send(IPAddress.ANY, datagram.src, GoBackNProtocolSender.IP_PROTO_GOBACKN_SENDER, new ACKMessage(seq));
             System.out.println("Receiver : message in order, Ack sent");
