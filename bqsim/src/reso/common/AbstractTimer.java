@@ -79,6 +79,6 @@ public abstract class AbstractTimer {
 	 * This method must be implemented by the user. This method will be called
 	 * each time the timer expires.
 	 */
-	protected abstract void run() throws Exception;
+	protected abstract void run() throws Exception ;
 		
 }

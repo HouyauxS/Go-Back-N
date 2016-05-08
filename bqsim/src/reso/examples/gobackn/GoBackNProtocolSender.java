@@ -16,9 +16,11 @@ public class GoBackNProtocolSender implements IPInterfaceListener {
     private int send_base = 0;
     private int next_seq_num = 0;
     protected int win_size = 4;
+    protected int ssthresh = 16;
     private AbstractTimer at;
     private IPAddress dst;
     private ArrayList<GoBackNMessage> buffer;
+    protected ArrayList<Integer> duplicate;//used to see if we receive 3 duplicate ack
 
     public GoBackNProtocolSender(IPHost host) {
         this.host = host;
@@ -35,6 +37,8 @@ public class GoBackNProtocolSender implements IPInterfaceListener {
                     host.getIPLayer().send(IPAddress.ANY, dst,
                             GoBackNProtocolReceiver.IP_PROTO_GOBACKN_RECEIVER, buffer.get(i));
                 }
+                ssthresh = win_size/2; //the timout congestion phase is apply here
+                win_size = 1;
                 start();
             }
         };
@@ -58,6 +62,29 @@ public class GoBackNProtocolSender implements IPInterfaceListener {
         else
             at.start();
         deliverMsg(buffer.get(next_seq_num));
+        congestionControl(msg);
+    }
+
+    /**
+     * this method is used to apply the congestion control ( like tcp reno )
+     * @param msg : ack message received by the Sender.
+     */
+    private void congestionControl(ACKMessage msg) { //the timeout phase is tested in the constructor
+        if ( win_size < ssthresh ) // in this case , the window grows exponentially
+            win_size*=2;
+        else if (win_size >= ssthresh) // in this case , the window grows linearly
+            win_size+=1;
+        else if (duplicate.size() == 3) { //in this case, we have 3 same ack, we apply the curse method
+            ssthresh = win_size/2;
+            win_size = ssthresh;
+            duplicate.clear();
+        }
+        else if (msg.num==duplicate.get(0)) { //we verify if we have a similar ack than the previous
+            duplicate.add(new Integer(msg.num));
+        }
+        else //we initialize the ack to compare, to see if we have the same ack
+            duplicate.clear();
+            duplicate.add(msg.num);
     }
 
     /*
