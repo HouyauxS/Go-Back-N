@@ -14,7 +14,7 @@ public class GoBackNProtocolSender implements IPInterfaceListener {
 
     private final IPHost host;
     private int send_base = 0;
-    private int next_seq_num = 1;
+    private int next_seq_num = 0;
     protected int win_size = 4;
     private AbstractTimer at;
     private IPAddress dst;
@@ -22,6 +22,7 @@ public class GoBackNProtocolSender implements IPInterfaceListener {
 
     public GoBackNProtocolSender(IPHost host) {
         this.host = host;
+        this.buffer = new ArrayList<GoBackNMessage>(1000);
         /*
         * Creation of a scheduler and timer for the Go-Back-N timeout part,
         * The timer occurs after 3 seconds if there's no ack received
@@ -30,7 +31,7 @@ public class GoBackNProtocolSender implements IPInterfaceListener {
         this.at = new AbstractTimer(host.getNetwork().getScheduler(), 3, false) {
             @Override
             protected void run() throws Exception {
-                for (int i = send_base; i < next_seq_num - 1; i++) {
+                for (int i = send_base; i < next_seq_num; i++) {
                     host.getIPLayer().send(IPAddress.ANY, dst,
                             GoBackNProtocolReceiver.IP_PROTO_GOBACKN_RECEIVER, buffer.get(i));
                 }
@@ -47,9 +48,10 @@ public class GoBackNProtocolSender implements IPInterfaceListener {
             throws Exception {
         ACKMessage msg = (ACKMessage) datagram.getPayload();
         // Print the IP source and IP dest plus the content of the message
-        System.out.println("Sender : Go-Back-N message from " + datagram.src + " to " + datagram.dst + " : " + msg);
+        //System.out.println("Sender : Go-Back-N message from " + datagram.src + " to " + datagram.dst + " : " + msg);
 
         // Receive part of Go-Back-N protocol
+        System.out.println("next_seq_num = " + next_seq_num + " send_base = " + send_base);
         send_base = msg.num + 1;
         if (send_base == next_seq_num)
             at.stop();

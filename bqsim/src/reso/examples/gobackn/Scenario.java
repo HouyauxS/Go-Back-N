@@ -9,10 +9,8 @@ public class Scenario {
 
     public final ArrayList<GoBackNMessage> messages;
     public final double interval;
-    private final int numberOfMessages;
 
     public Scenario(int numberOfMessages, double interval) {
-        this.numberOfMessages = numberOfMessages;
         this.interval = interval;
         messages = new ArrayList<GoBackNMessage>();
         for(int i=0; i < numberOfMessages;i++){

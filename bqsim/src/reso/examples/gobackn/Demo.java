@@ -32,7 +32,7 @@ public class Demo {
             final IPAddress IP_ADDR1= IPAddress.getByAddress(192, 168, 0, 1);
             final IPAddress IP_ADDR2= IPAddress.getByAddress(192, 168, 0, 2);
 
-            Scenario scenar = new Scenario(100, 1);
+            Scenario scenar = new Scenario(10, 1);
             IPHost host1= NetworkBuilder.createHost(network, "H1", IP_ADDR1, MAC_ADDR1);
             host1.getIPLayer().addRoute(IP_ADDR2, "eth0");
             host1.addApplication(new AppSender(host1, IP_ADDR2, scenar.messages));
@@ -45,12 +45,18 @@ public class Demo {
             EthernetInterface h1_eth0= (EthernetInterface) host1.getInterfaceByName("eth0");
             EthernetInterface h2_eth0= (EthernetInterface) host2.getInterfaceByName("eth0");
 
-            new Link<EthernetFrame>(h1_eth0, h2_eth0, 5000000, 100000);
+            new UnreliableLink<EthernetFrame>(h1_eth0, h2_eth0, 5000000, 100000);
 
             AbstractTimer at = new AbstractTimer(scheduler, scenar.interval, true) {
+                int i;
                 @Override
                 protected void run() throws Exception {
-                    host1.start();
+                    if(i < scenar.messages.size()) {
+                        host1.start();
+                        i++;
+                    }
+                    else
+                        stop();
                 }
             };
 
